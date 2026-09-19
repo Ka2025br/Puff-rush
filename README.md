@@ -1,18 +1,40 @@
-# PUFF RUSH V2 — High Performance
+# PUFF RUSH V3 — Journey Edition
 
-Evolução do MVP do PUFF RUSH.
+Versão 3 focada em gameplay, progressão e identidade visual.
 
-## V2
-- 3 fases progressivas
-- velocidade e dificuldade crescentes
-- pérolas colecionáveis (+2 pontos)
-- escudo temporário ao coletar pérola
-- visual especial azul na Fase 3
-- partículas, bolhas e feedback de mudança de fase
-- recorde salvo no navegador
-- controles por toque, clique e barra de espaço
-- pausa automática quando a aba fica oculta
-- Canvas otimizado para mobile/desktop e DPR limitado a 2 para desempenho
+## Jornada gratuita
+1. Recife Tranquilo
+2. Caverna Sombria
+3. Navio Afundado
+4. Oceano Profundo
+5. Mundo Tropical
+6. Geleiras Polares
 
-## Publicação
-Suba `index.html`, `style.css`, `game.js` e `README.md` na raiz do repositório.
+## Portal Premium preparado
+7. Cidade Submarina
+8. Vulcão Oceânico
+9. Abissal
+10. Galáxia Aquática
+
+A V3 não cobra nada: o Premium aparece apenas como destino bloqueado para preparar a V4.
+
+## Sistemas
+- 3 vidas por partida
+- moedas e banco persistente
+- recorde persistente
+- combo por sequência de obstáculos
+- escudo temporário
+- ambientes que mudam durante a mesma partida
+- obstáculos móveis a partir dos mundos avançados
+- dificuldade e velocidade progressivas
+- mapa de mundos
+- portal Premium
+- toque, mouse e barra de espaço
+- otimização mobile com DPR limitado
+
+## Upload no GitHub
+Envie estes quatro arquivos para a raiz do repositório:
+- index.html
+- style.css
+- game.js
+- README.md

@@ -3,27 +3,50 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<meta name="theme-color" content="#062b4d">
-<title>PUFF RUSH V2</title>
+<meta name="theme-color" content="#031a31">
+<title>PUFF RUSH V3</title>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<main id="game">
-  <canvas id="canvas" aria-label="PUFF RUSH"></canvas>
-  <div id="hud" class="hidden">
-    <span id="level">FASE 1</span><strong id="score">0</strong><span id="best">REC 0</span>
-  </div>
-  <section id="overlay">
-    <div class="logo">PUFF <b>RUSH</b></div>
-    <div class="fish-mark">🐡</div>
-    <h1>FUNDO DO MAR</h1>
-    <p>Toque, clique ou use <b>ESPAÇO</b> para nadar. Passe pelos recifes, pegue pérolas e sobreviva à aceleração.</p>
-    <button id="start">JOGAR AGORA</button>
-    <div class="modes">
-      <span>3 FASES</span><span>VELOCIDADE PROGRESSIVA</span><span>POWER-UP</span>
+<div id="app">
+  <canvas id="game"></canvas>
+
+  <header id="hud" class="hidden">
+    <div class="pill" id="worldLabel">RECIFE TRANQUILO</div>
+    <div class="score"><strong id="score">0</strong><small>PTS</small></div>
+    <div class="pill">🪙 <span id="coins">0</span> · ♥ <span id="lives">3</span></div>
+  </header>
+
+  <section id="menu" class="screen">
+    <div class="brand">PUFF <span>RUSH</span></div>
+    <div class="tag">PEQUENO PEIXE. GRANDES AVENTURAS.</div>
+    <div class="hero">🐡</div>
+    <button id="play">JOGAR</button>
+    <button class="secondary" id="worldsBtn">MUNDOS</button>
+    <div class="stats">
+      <span>🏆 RECORDE <b id="best">0</b></span>
+      <span>🪙 TOTAL <b id="bank">0</b></span>
     </div>
-    <small>PUFF RUSH V2 • MVP PERFORMANCE</small>
+    <small class="version">V3 • JOURNEY EDITION</small>
   </section>
-</main>
+
+  <section id="worlds" class="screen hidden">
+    <h2>MAPA DA JORNADA</h2>
+    <p>Explore, evolua e chegue ao portal Premium.</p>
+    <div id="worldGrid"></div>
+    <button class="secondary" id="back">VOLTAR</button>
+  </section>
+
+  <section id="result" class="screen hidden">
+    <div class="brand small">PUFF <span>RUSH</span></div>
+    <h2 id="resultTitle">FIM DA MISSÃO</h2>
+    <div id="resultFish" class="hero mini">🐡</div>
+    <p id="resultText"></p>
+    <button id="again">JOGAR NOVAMENTE</button>
+    <button class="secondary" id="resultWorlds">VER MUNDOS</button>
+  </section>
+
+  <div id="toast"></div>
+</div>
 <script src="game.js"></script>
 </body></html>
