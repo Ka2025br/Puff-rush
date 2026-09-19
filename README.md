@@ -22,3 +22,11 @@ A V3.75 FINAL usa um progresso próprio, separado das versões de teste anterior
 - A Fase 2 mantém a dificuldade maior e usa Puff azul mais escuro com espinhos maiores.
 - Ao concluir a Fase 2, a jornada gratuita termina na Área VIP bloqueada.
 - Demais elementos da V3.75 foram preservados.
+
+
+## V3.80 — RANKING (camada adicionada)
+- A V3.75 permanece como base de gameplay, sem alteração de física, fases, velocidade, obstáculos, progressão ou Puff.
+- Área RANKING da capa agora abre o Ranking Top 20.
+- Primeiro acesso ao ranking solicita apenas apelido (3–15 caracteres).
+- Exibe Top 20, posição pessoal e recorde.
+- Nesta build o ranking funciona localmente para validar visual e fluxo. O ranking global entre aparelhos exige a próxima integração com banco online.
