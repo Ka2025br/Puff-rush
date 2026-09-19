@@ -1,39 +1,45 @@
-# PUFF RUSH V3 — Journey Edition
+# PUFF RUSH V3.5 — Ultimate Free Edition
 
-Versão 3 focada em gameplay, progressão e identidade visual.
+Última versão gratuita planejada antes da V4 Premium.
 
-## Jornada gratuita
-1. Recife Tranquilo
-2. Caverna Sombria
-3. Navio Afundado
-4. Oceano Profundo
-5. Mundo Tropical
-6. Geleiras Polares
+## Estrutura corrigida
+A V3.0 mudava principalmente o cenário durante uma corrida contínua. A V3.5 transforma o jogo em quatro fases independentes, com introdução, missão, começo, percurso, conclusão, estrelas e desbloqueio da próxima fase.
 
-## Portal Premium preparado
-7. Cidade Submarina
-8. Vulcão Oceânico
-9. Abissal
-10. Galáxia Aquática
+### Fase 1 — Recife Tranquilo
+Aprendizado, corais, cardumes, moedas e obstáculos simples.
 
-A V3 não cobra nada: o Premium aparece apenas como destino bloqueado para preparar a V4.
+### Fase 2 — Caverna de Cristais
+Ambiente escuro, cristais e obstáculos móveis.
+
+### Fase 3 — Navio Afundado
+Destroços, mastros, correnteza e movimento mais exigente.
+
+### Fase 4 — Geleiras Polares
+Velocidade máxima da edição gratuita, gelo e desafio final.
 
 ## Sistemas
-- 3 vidas por partida
-- moedas e banco persistente
+- 4 fases reais
+- 3 vidas
+- avaliação de 1 a 3 estrelas
+- desbloqueio progressivo
+- moedas persistentes
 - recorde persistente
-- combo por sequência de obstáculos
-- escudo temporário
-- ambientes que mudam durante a mesma partida
-- obstáculos móveis a partir dos mundos avançados
-- dificuldade e velocidade progressivas
-- mapa de mundos
-- portal Premium
+- combo
+- escudo
+- dificuldade específica por fase
+- tela de missão antes de cada fase
+- tela de conclusão após cada fase
+- mapa de progressão
+- Portal Premium cinematográfico após a Fase 4
+- Premium apenas em preview: sem pagamento na V3.5
 - toque, mouse e barra de espaço
-- otimização mobile com DPR limitado
+- canvas otimizado para mobile e desktop
 
-## Upload no GitHub
-Envie estes quatro arquivos para a raiz do repositório:
+## V4 planejada
+Cidade Submarina, Vulcão Oceânico, Abissal e Galáxia Aquática, com Puff Premium e monetização a ser definida depois dos testes da V3.5.
+
+## Arquivos
+Envie para a raiz do repositório:
 - index.html
 - style.css
 - game.js
