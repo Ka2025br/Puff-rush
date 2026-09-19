@@ -5,8 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <meta name="theme-color" content="#03182d">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<title>PUFF RUSH 3.5</title>
+<title>PUFF RUSH 3.75</title>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -14,70 +13,71 @@
 <canvas id="game" aria-label="PUFF RUSH"></canvas>
 
 <header id="hud" class="hidden">
-  <div class="pill"><span id="stageName">RECIFE</span><small id="progress">0%</small></div>
-  <div class="score"><strong id="score">0</strong><small>PONTOS</small></div>
-  <div class="pill right">🪙 <span id="coins">0</span> · ♥ <span id="lives">3</span></div>
+ <div class="pill"><span id="stageName">RECIFE</span><small id="progress">0%</small></div>
+ <div class="score"><strong id="score">0</strong><small>PONTOS</small></div>
+ <div class="pill right">🪙 <span id="coins">0</span> · ♥ <span id="lives">3</span></div>
 </header>
 
-<section id="home" class="screen">
-  <div class="brand">PUFF <span>RUSH</span></div>
-  <div class="subtitle">JOURNEY EDITION • 3.5</div>
-  <div class="mascot">🐡</div>
-  <button id="continueBtn">COMEÇAR JORNADA</button>
-  <button id="mapBtn" class="ghost">MAPA DAS FASES</button>
-  <div class="miniStats"><span>🏆 <b id="best">0</b></span><span>⭐ <b id="starsBank">0</b>/12</span><span>🪙 <b id="bank">0</b></span></div>
-  <small class="hint">TOQUE • CLIQUE • ESPAÇO</small>
+<section id="home" class="screen home">
+ <div class="bubbles"></div>
+ <div class="brand">PUFF <span>RUSH</span></div>
+ <div class="subtitle">JOURNEY EDITION • 3.75</div>
+ <div class="heroFish" aria-label="Puffy">
+   <i class="tail"></i><i class="fin"></i><i class="bodyFish"><i class="spot s1"></i><i class="spot s2"></i><i class="spot s3"></i><i class="eye e1"></i><i class="eye e2"></i><i class="mouth"></i></i>
+ </div>
+ <div class="tagline">PEQUENAS MISSÕES. GRANDES AVENTURAS.</div>
+ <button id="continueBtn">COMEÇAR JORNADA</button>
+ <button id="mapBtn" class="ghost">MAPA DAS FASES</button>
+ <div class="miniStats"><span>🏆 <b id="best">0</b></span><span>⭐ <b id="starsBank">0</b>/12</span><span>🪙 <b id="bank">0</b></span></div>
+ <div class="soundRow"><button id="soundBtn" class="tiny">🔊 SOM</button></div>
+ <small class="hint">TOQUE • CLIQUE • ESPAÇO</small>
 </section>
 
 <section id="map" class="screen hidden">
-  <div class="topTitle"><b>MAPA DA JORNADA</b><small>4 fases • cada mundo tem sua própria mecânica</small></div>
-  <div id="stageCards"></div>
-  <div class="premiumCard">
-    <div>👑 <b>PORTAL PREMIUM</b></div>
-    <small>Cidade Submarina • Vulcão • Abissal • Galáxia Aquática</small>
-    <span>EM BREVE NA V4</span>
-  </div>
-  <button id="mapBack" class="ghost">VOLTAR</button>
+ <div class="topTitle"><b>MAPA DA JORNADA</b><small>2 fases FREE • 2 fases PREMIUM</small></div>
+ <div id="stageCards"></div>
+ <button id="mapBack" class="ghost">VOLTAR</button>
 </section>
 
 <section id="intro" class="screen hidden">
-  <div id="introIcon" class="stageIcon">🪸</div>
-  <div class="eyebrow">NOVA MISSÃO</div>
-  <h1 id="introTitle">RECIFE TRANQUILO</h1>
-  <p id="introDesc"></p>
-  <div id="introMission" class="mission"></div>
-  <button id="startStage">INICIAR FASE</button>
+ <div id="introIcon" class="stageIcon">🪸</div>
+ <div id="tierBadge" class="tier free">FREE</div>
+ <div class="eyebrow">NOVA MISSÃO</div>
+ <h1 id="introTitle"></h1><p id="introDesc"></p>
+ <div id="introMission" class="mission"></div>
+ <button id="startStage">INICIAR FASE</button>
 </section>
 
 <section id="complete" class="screen hidden">
-  <div class="eyebrow">MISSÃO CONCLUÍDA</div>
-  <h1 id="completeTitle">RECIFE TRANQUILO</h1>
-  <div id="stars" class="stars">☆☆☆</div>
-  <p id="completeText"></p>
-  <button id="nextStage">PRÓXIMA FASE</button>
-  <button id="retryStage" class="ghost">JOGAR NOVAMENTE</button>
+ <div class="eyebrow">MISSÃO CONCLUÍDA</div>
+ <h1 id="completeTitle"></h1><div id="stars" class="stars">☆☆☆</div>
+ <p id="completeText"></p>
+ <button id="nextStage">PRÓXIMA FASE</button>
+ <button id="retryStage" class="ghost">JOGAR NOVAMENTE</button>
 </section>
 
 <section id="gameover" class="screen hidden">
-  <div class="brand small">PUFF <span>RUSH</span></div>
-  <div class="mascot mini">🐡</div>
-  <h1>QUASE!</h1>
-  <p id="gameoverText"></p>
-  <button id="retry">TENTAR DE NOVO</button>
-  <button id="goMap" class="ghost">MAPA</button>
+ <div class="brand small">PUFF <span>RUSH</span></div><h1>QUASE!</h1>
+ <p id="gameoverText"></p>
+ <button id="retry">TENTAR DE NOVO</button><button id="goMap" class="ghost">MAPA</button>
 </section>
 
 <section id="premium" class="screen premium hidden">
-  <div class="premiumGlow"></div>
-  <div class="eyebrow gold">VOCÊ CONQUISTOU O OCEANO</div>
-  <div class="bluePuff">🐡</div>
-  <h1>O PORTAL FOI ENCONTRADO</h1>
-  <p>Do outro lado existem lugares que o Puff comum ainda não consegue explorar.</p>
-  <div class="premiumWorlds"><span>🏙️ CIDADE SUBMARINA</span><span>🌋 VULCÃO</span><span>🐋 ABISSAL</span><span>🌌 GALÁXIA AQUÁTICA</span></div>
-  <button id="premiumPreview">PUFF PREMIUM • EM BREVE</button>
-  <button id="premiumHome" class="ghost">VOLTAR AO INÍCIO</button>
+ <div class="premiumGlow"></div><div class="eyebrow gold">JORNADA FREE CONCLUÍDA</div>
+ <div class="primeFish">🐡</div>
+ <h1>AS PROFUNDEZAS FORAM DESBLOQUEADAS</h1>
+ <p>Fases 3 + 4 e o <b>PUFF PRIME</b>. Nesta edição de teste o acesso Premium pode ser liberado sem cobrança.</p>
+ <div class="premiumWorlds"><span>⚓ FASE 3 • NAVIO AFUNDADO</span><span>🌌 FASE 4 • ABISMO</span></div>
+ <button id="premiumPreview">LIBERAR PREMIUM • TESTE</button>
+ <button id="premiumHome" class="ghost">VOLTAR AO INÍCIO</button>
 </section>
 
+<section id="ending" class="screen premium hidden">
+ <div class="eyebrow gold">JORNADA CONCLUÍDA</div><div class="primeFish">🐡</div>
+ <h1>VOCÊ DOMINOU O ABISMO</h1>
+ <p>As quatro fases foram concluídas. O Puff Prime está pronto para a próxima jornada.</p>
+ <button id="endingHome">VOLTAR AO INÍCIO</button>
+</section>
 <div id="toast"></div>
 </main>
 <script src="game.js"></script>

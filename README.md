@@ -1,45 +1,29 @@
-# PUFF RUSH V3.5 — Ultimate Free Edition
+# PUFF RUSH V3.75 — FREE + PREMIUM TEST BUILD
 
-Última versão gratuita planejada antes da V4 Premium.
+Versão de fechamento antes da integração comercial.
 
-## Estrutura corrigida
-A V3.0 mudava principalmente o cenário durante uma corrida contínua. A V3.5 transforma o jogo em quatro fases independentes, com introdução, missão, começo, percurso, conclusão, estrelas e desbloqueio da próxima fase.
+## Estrutura
+- Fase 1 FREE — Recife Raso
+- Fase 2 FREE — Correnteza
+- Fase 3 PREMIUM — Navio Afundado
+- Fase 4 PREMIUM — Abismo
+- Após a Fase 2, o Portal Premium aparece.
+- Nesta build de teste, o botão Premium libera as fases 3 e 4 sem cobrança.
+- Na versão comercial, esse botão será substituído pela confirmação real de pagamento.
 
-### Fase 1 — Recife Tranquilo
-Aprendizado, corais, cardumes, moedas e obstáculos simples.
-
-### Fase 2 — Caverna de Cristais
-Ambiente escuro, cristais e obstáculos móveis.
-
-### Fase 3 — Navio Afundado
-Destroços, mastros, correnteza e movimento mais exigente.
-
-### Fase 4 — Geleiras Polares
-Velocidade máxima da edição gratuita, gelo e desafio final.
-
-## Sistemas
-- 4 fases reais
-- 3 vidas
-- avaliação de 1 a 3 estrelas
-- desbloqueio progressivo
-- moedas persistentes
-- recorde persistente
-- combo
-- escudo
-- dificuldade específica por fase
-- tela de missão antes de cada fase
-- tela de conclusão após cada fase
-- mapa de progressão
-- Portal Premium cinematográfico após a Fase 4
-- Premium apenas em preview: sem pagamento na V3.5
-- toque, mouse e barra de espaço
-- canvas otimizado para mobile e desktop
-
-## V4 planejada
-Cidade Submarina, Vulcão Oceânico, Abissal e Galáxia Aquática, com Puff Premium e monetização a ser definida depois dos testes da V3.5.
+## Melhorias V3.75
+- Nova tela inicial com Puffy ilustrado em CSS, sem dependência de imagem externa.
+- Puff Prime azul nas fases Premium.
+- Progressão e velocidade crescentes.
+- 3 vidas, moedas, estrelas, recorde e persistência local.
+- Sons gerados via Web Audio: nado, moeda, impacto, vitória e desbloqueio.
+- Música ambiente procedural leve, sem arquivos de áudio externos.
+- Controle de som na tela inicial.
+- Final real após a Fase 4.
+- Mobile/Desktop: toque, clique e barra de espaço.
 
 ## Arquivos
-Envie para a raiz do repositório:
+Abra `index.html` no navegador. Para publicar, envie os quatro arquivos para a mesma raiz:
 - index.html
 - style.css
 - game.js
