@@ -1,7 +1,7 @@
 const $=q=>document.querySelector(q),C=$("#game"),ctx=C.getContext("2d",{alpha:false});
 const screens=["home","map","intro","complete","gameover","premium","ending"];
 let W=0,H=0,D=1,last=0,running=false,stage=0,score=0,coins=0,lives=3,distance=0,spawn=0,pickSpawn=0,powerSpawn=0,inv=0,fish,obs=[],items=[],fx=[],bg=0,combo=0,comboT=0;
-let best=+(localStorage.pr35best||0),bank=+(localStorage.pr35bank||0),unlocked=Math.min(3,+(localStorage.pr35unlock||0)),stars=JSON.parse(localStorage.pr35stars||"[0,0,0,0]"),premium=false,soundOn=localStorage.pr375sound!=="0";
+let best=+(localStorage.pr375finalbest||0),bank=+(localStorage.pr375finalbank||0),unlocked=Math.min(3,+(localStorage.pr375finalunlock||0)),stars=JSON.parse(localStorage.pr375finalstars||"[0,0,0,0]"),premium=false,soundOn=localStorage.pr375sound!=="0";
 const STAGES=[
  {name:"RECIFE RASO",short:"RECIFE",icon:"🪸",tier:"FREE",desc:"Aprenda o ritmo em um percurso mais longo e progressivo.",mission:"Chegue ao final • preserve vidas • colete moedas",goal:64,gap:.27,speed:2.45,maxSpeed:3.20,mechanic:"coral",colors:["#6ae7f1","#087ca2"]},
  {name:"CAVERNA",short:"CAVERNA",icon:"💎",tier:"FREE",desc:"Mais longa, mais rápida e com obstáculos móveis.",mission:"Atravesse a caverna • adapte-se à aceleração",goal:76,gap:.245,speed:2.85,maxSpeed:3.75,mechanic:"cave",colors:["#234c86","#160d43"]},
@@ -14,7 +14,7 @@ let ac=null,musicTimer=null;function audio(){if(!soundOn)return null;if(!ac)ac=n
 
 function screen(id){screens.forEach(s=>$("#"+s).classList.toggle("hidden",s!==id));$("#hud").classList.add("hidden")}
 function toast(t){let e=$("#toast");e.textContent=t;e.classList.add("show");clearTimeout(toast.t);toast.t=setTimeout(()=>e.classList.remove("show"),1000)}
-function persist(){localStorage.pr35best=Math.max(best,score);localStorage.pr35bank=bank;localStorage.pr35unlock=unlocked;localStorage.pr35stars=JSON.stringify(stars);localStorage.pr375premium="0";localStorage.pr375sound=soundOn?"1":"0";best=Math.max(best,score)}
+function persist(){localStorage.pr375finalbest=Math.max(best,score);localStorage.pr375finalbank=bank;localStorage.pr375finalunlock=unlocked;localStorage.pr375finalstars=JSON.stringify(stars);localStorage.pr375premium="0";localStorage.pr375sound=soundOn?"1":"0";best=Math.max(best,score)}
 function homeStats(){}
 function mapDraw(){let h="";STAGES.forEach((s,i)=>{let paid=i>=2,lock=i>unlocked||(paid&&!premium);h+=`<div class="stageCard ${paid?"paid":""} ${lock?"locked":""}" data-i="${i}"><span class="medal">${"⭐".repeat(stars[i])}</span><div class="ico">${s.icon}${lock?" 🔒":""}</div><b>${i+1}. ${s.name}</b><small>${s.tier} • ${s.desc}</small></div>`});$("#stageCards").innerHTML=h;document.querySelectorAll(".stageCard").forEach(e=>e.onclick=()=>{let i=+e.dataset.i;if(i>=2&&!premium){screen("premium");return}if(i<=unlocked)intro(i)})}
 function intro(i){if(i>=2&&!premium){screen("premium");return}stage=i;let s=STAGES[i];$("#introIcon").textContent=s.icon;$("#introTitle").textContent=s.name;$("#introDesc").textContent=s.desc;$("#introMission").textContent="MISSÃO • "+s.mission;let b=$("#tierBadge");b.textContent=s.tier;b.className="tier "+(i>=2?"paid":"");screen("intro")}
