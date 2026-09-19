@@ -1,32 +1,27 @@
-# PUFF RUSH V3.75 — FINAL TEST
+# PUFF RUSH V3.81 — RANKING GLOBAL
 
-Versão final de teste antes da integração de cobrança.
+Base: V3.75 FINAL TEST. Evolução exclusiva da camada de ranking da V3.80.
 
-- Nova capa oficial dinâmica.
-- Som preservado.
-- Jogabilidade, progressão, duração e aceleração preservadas da versão aprovada.
-- 4 fases abertas para teste.
-- Fases 1 e 2: FREE.
-- Área VIP: Fase 3 — Navio Afundado; Fase 4 — Abismo.
-- Puff Prime preservado nas fases finais.
-- A Área VIP está aberta nesta build apenas para teste; a cobrança entra na próxima etapa.
+## REGRA TRAVADA
+Nenhuma alteração intencional em jogabilidade, física, fases, velocidade, obstáculos, moedas, som, progressão FREE/VIP, Puff ou capa. A V3.75 continua sendo a base-mãe.
 
-Abra `index.html` para jogar.
+## O que mudou
+- Ranking deixou de usar a lista local do navegador.
+- Cada aparelho recebe um player_id próprio.
+- Apelido permanece simples (3–15 caracteres).
+- TOP 20 consulta um banco Supabase compartilhado.
+- Jogador vê sua posição mesmo fora do TOP 20.
+- Se o banco ainda não estiver configurado, a tela informa que o ranking global aguarda conexão — não inventa jogadores locais.
 
-## Correção final de progressão
-A V3.75 FINAL usa um progresso próprio, separado das versões de teste anteriores. Assim, uma gravação antiga não pode pular a Fase 1. Ao concluir Recife Raso, a Fase 2 — Caverna — é desbloqueada normalmente; depois dela, a jornada FREE termina na tela da Área VIP. Navio Afundado e Abismo permanecem bloqueados.
+## Para ativar globalmente
+1. Crie/use um projeto Supabase EXCLUSIVO do Puff Rush.
+2. Execute `supabase-ranking.sql` no SQL Editor.
+3. Em `ranking-config.js`, cole apenas Project URL e ANON/PUBLISHABLE key.
+4. Nunca coloque `service_role` no jogo.
+5. Publique esta pasta no mesmo projeto/site quando o teste estiver aprovado.
 
-## Correção final de fluxo
-- O botão JOGAR inicia sempre na Fase 1 — Recife Raso.
-- Ao concluir a Fase 1, segue para a Fase 2 — Caverna.
-- A Fase 2 mantém a dificuldade maior e usa Puff azul mais escuro com espinhos maiores.
-- Ao concluir a Fase 2, a jornada gratuita termina na Área VIP bloqueada.
-- Demais elementos da V3.75 foram preservados.
+## VIP futuro
+A Área VIP deve ser construída em módulo separado e carregada somente quando o jogador entrar nela (lazy loading). Assim mapas, imagens, sons e fases VIP não pesam no carregamento inicial do FREE. O núcleo V3.75 continua congelado; a VIP entra como expansão isolada.
 
-
-## V3.80 — RANKING (camada adicionada)
-- A V3.75 permanece como base de gameplay, sem alteração de física, fases, velocidade, obstáculos, progressão ou Puff.
-- Área RANKING da capa agora abre o Ranking Top 20.
-- Primeiro acesso ao ranking solicita apenas apelido (3–15 caracteres).
-- Exibe Top 20, posição pessoal e recorde.
-- Nesta build o ranking funciona localmente para validar visual e fluxo. O ranking global entre aparelhos exige a próxima integração com banco online.
+## Segurança
+Esta versão tem validação básica de formato e mantém somente o maior score. Antes de prêmio real, adicionar validação de partidas no servidor/anti-cheat; código no navegador pode ser adulterado.
