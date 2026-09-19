@@ -4,7 +4,7 @@ let W=0,H=0,D=1,last=0,running=false,stage=0,score=0,coins=0,lives=3,distance=0,
 let best=+(localStorage.pr375finalbest||0),bank=+(localStorage.pr375finalbank||0),unlocked=Math.min(3,+(localStorage.pr375finalunlock||0)),stars=JSON.parse(localStorage.pr375finalstars||"[0,0,0,0]"),premium=false,soundOn=localStorage.pr375sound!=="0";
 const STAGES=[
  {name:"RECIFE RASO",short:"RECIFE",icon:"🪸",tier:"FREE",desc:"Aprenda o ritmo em um percurso mais longo e progressivo.",mission:"Chegue ao final • preserve vidas • colete moedas",goal:64,gap:.27,speed:2.45,maxSpeed:3.20,mechanic:"coral",colors:["#6ae7f1","#087ca2"]},
- {name:"CAVERNA",short:"CAVERNA",icon:"💎",tier:"FREE",desc:"Mais longa, mais rápida e com obstáculos móveis.",mission:"Atravesse a caverna • adapte-se à aceleração",goal:76,gap:.245,speed:2.85,maxSpeed:3.75,mechanic:"cave",colors:["#234c86","#160d43"]},
+ {name:"CAVERNA",short:"CAVERNA",icon:"💎",tier:"FREE",desc:"Mais longa, mais rápida e com obstáculos móveis.",mission:"Atravesse a caverna • adapte-se à aceleração",goal:76,gap:.245,speed:3.05,maxSpeed:4.10,mechanic:"cave",colors:["#234c86","#160d43"]},
  {name:"NAVIO AFUNDADO",short:"NAVIO",icon:"⚓",tier:"PREMIUM",desc:"Puff Prime entra nos destroços e enfrenta correnteza.",mission:"Passe pelo casco • domine a velocidade",goal:88,gap:.225,speed:3.20,maxSpeed:4.30,mechanic:"ship",colors:["#247e92","#062b46"]},
  {name:"ABISMO",short:"ABISMO",icon:"🌌",tier:"PREMIUM",desc:"A fase final: escura, longa, rápida e precisa.",mission:"Conquiste o Abismo • finalize a jornada",goal:102,gap:.21,speed:3.55,maxSpeed:4.85,mechanic:"abyss",colors:["#102f72","#030817"]}
 ];
