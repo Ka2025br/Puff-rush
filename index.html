@@ -1,1 +1,29 @@
-<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"><title>PUFF RUSH</title><link rel="stylesheet" href="style.css"></head><body><main id="game"><canvas id="canvas"></canvas><section id="overlay"><h1>PUFF RUSH</h1><p>Toque, clique ou aperte espaço para nadar.</p><button id="start">JOGAR</button><small>MVP • Kadu Ferreira</small></section></main><script src="game.js"></script></body></html>
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="theme-color" content="#062b4d">
+<title>PUFF RUSH V2</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<main id="game">
+  <canvas id="canvas" aria-label="PUFF RUSH"></canvas>
+  <div id="hud" class="hidden">
+    <span id="level">FASE 1</span><strong id="score">0</strong><span id="best">REC 0</span>
+  </div>
+  <section id="overlay">
+    <div class="logo">PUFF <b>RUSH</b></div>
+    <div class="fish-mark">🐡</div>
+    <h1>FUNDO DO MAR</h1>
+    <p>Toque, clique ou use <b>ESPAÇO</b> para nadar. Passe pelos recifes, pegue pérolas e sobreviva à aceleração.</p>
+    <button id="start">JOGAR AGORA</button>
+    <div class="modes">
+      <span>3 FASES</span><span>VELOCIDADE PROGRESSIVA</span><span>POWER-UP</span>
+    </div>
+    <small>PUFF RUSH V2 • MVP PERFORMANCE</small>
+  </section>
+</main>
+<script src="game.js"></script>
+</body></html>
