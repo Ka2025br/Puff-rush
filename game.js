@@ -17,9 +17,95 @@ function ensurePlayerId(){if(!playerId){playerId=(crypto.randomUUID?crypto.rando
 function cleanNick(v){return v.replace(/[^A-Za-zÀ-ÿ0-9 _.-]/g,"").replace(/\s+/g," ").trim().slice(0,15)}
 function rankReady(){return !!(RANK_API.url&&RANK_API.anonKey&&RANK_API.url.indexOf("COLE_")<0&&RANK_API.anonKey.indexOf("COLE_")<0)}
 function rankHeaders(extra={}){return Object.assign({"apikey":RANK_API.anonKey,"Authorization":"Bearer "+RANK_API.anonKey,"Content-Type":"application/json"},extra)}
-async function submitRanking(){if(!playerNick||!rankReady())return;try{await fetch(RANK_API.url.replace(/\/$/,"")+"/rest/v1/rpc/upsert_puff_score",{method:"POST",headers:rankHeaders(),body:JSON.stringify({p_player_id:ensurePlayerId(),p_nickname:playerNick,p_score:Math.max(best,score,+(localStorage.pr375finalbest||0))})})}catch(e){}}
-async function fetchRanking(){if(!rankReady())return {top:[],me:null,offline:true};let base=RANK_API.url.replace(/\/$/,"");try{let [a,b]=await Promise.all([fetch(base+"/rest/v1/puff_ranking?select=nickname,best_score&order=best_score.desc,updated_at.asc&limit=20",{headers:rankHeaders()}),fetch(base+"/rest/v1/rpc/get_puff_rank",{method:"POST",headers:rankHeaders(),body:JSON.stringify({p_player_id:ensurePlayerId()})})]);if(!a.ok||!b.ok)throw 0;return {top:await a.json(),me:await b.json(),offline:false}}catch(e){return {top:[],me:null,offline:true}}}
-async function drawRanking(){let box=$("#rankList");box.innerHTML='<div class="rankEmpty">Carregando ranking global...</div>';$("#myRank").textContent="🐡 Consultando sua posição...";let r=await fetchRanking();if(r.offline){box.innerHTML='<div class="rankEmpty">Ranking global aguardando conexão com o banco online.</div>';$("#myRank").textContent=playerNick?`🐡 ${playerNick} • recorde ${Math.max(best,+(localStorage.pr375finalbest||0))}`:"Escolha um apelido para entrar no ranking.";return}box.innerHTML=r.top.length?r.top.map((x,i)=>`<div class="rankRow"><span class="rankPos">${i<3?["🥇","🥈","🥉"][i]:"#"+(i+1)}</span><span class="rankName">${String(x.nickname).replace(/[<>&]/g,"")}</span><span class="rankScore">${+x.best_score} pts</span></div>`).join(""):'<div class="rankEmpty">O ranking começa com o primeiro jogador.</div>';let me=Array.isArray(r.me)?r.me[0]:r.me;$("#myRank").textContent=me&&me.position?`🐡 ${playerNick} • posição #${me.position} • recorde ${me.best_score}`:`🐡 ${playerNick} • faça seu primeiro recorde!`}
+async function submitRanking(){
+  if(!playerNick||!rankReady())return;
+  try{
+    let base=RANK_API.url.replace(/\/$/,"");
+    let current=Math.max(best,score,+(localStorage.pr375finalbest||0));
+
+    let q=await fetch(
+      base+"/rest/v1/ranking?player_name=eq."+encodeURIComponent(playerNick)+"&select=id,score&order=score.desc&limit=1",
+      {headers:rankHeaders()}
+    );
+
+    if(!q.ok)return;
+
+    let rows=await q.json();
+
+    if(rows.length){
+      if(current>+rows[0].score){
+        await fetch(
+          base+"/rest/v1/ranking?id=eq."+rows[0].id,
+          {
+            method:"PATCH",
+            headers:rankHeaders(),
+            body:JSON.stringify({score:current})
+          }
+        );
+      }
+    }else{
+      await fetch(
+        base+"/rest/v1/ranking",
+        {
+          method:"POST",
+          headers:rankHeaders({"Prefer":"return=minimal"}),
+          body:JSON.stringify({
+            player_name:playerNick,
+            score:current
+          })
+        }
+      );
+    }
+  }catch(e){}
+}
+
+async function fetchRanking(){
+  if(!rankReady())return {top:[],me:null,offline:true};
+
+  let base=RANK_API.url.replace(/\/$/,"");
+
+  try{
+    let a=await fetch(
+      base+"/rest/v1/ranking?select=player_name,score&order=score.desc,created_at.asc&limit=20",
+      {headers:rankHeaders()}
+    );
+
+    if(!a.ok)throw 0;
+
+    let top=await a.json();
+
+    return {top,me:null,offline:false};
+  }catch(e){
+    return {top:[],me:null,offline:true};
+  }
+}
+
+async function drawRanking(){
+  let box=$("#rankList");
+
+  box.innerHTML='<div class="rankEmpty">Carregando ranking global...</div>';
+  $("#myRank").textContent="🐡 Consultando sua posição...";
+
+  let r=await fetchRanking();
+
+  if(r.offline){
+    box.innerHTML='<div class="rankEmpty">Ranking global aguardando conexão com o banco online.</div>';
+    $("#myRank").textContent=playerNick
+      ?`🐡 ${playerNick} • recorde ${Math.max(best,+(localStorage.pr375finalbest||0))}`
+      :"Escolha um apelido para entrar no ranking.";
+    return;
+  }
+
+  box.innerHTML=r.top.length
+    ?r.top.map((x,i)=>`<div class="rankRow"><span class="rankPos">${i<3?["🥇","🥈","🥉"][i]:"#"+(i+1)}</span><span class="rankName">${String(x.player_name).replace(/[<>&]/g,"")}</span><span class="rankScore">${+x.score} pts</span></div>`).join("")
+    :'<div class="rankEmpty">O ranking começa com o primeiro jogador.</div>';
+
+  let pos=r.top.findIndex(x=>x.player_name===playerNick);
+
+  $("#myRank").textContent=pos>=0
+    ?`🐡 ${playerNick} • posição #${pos+1} • recorde ${r.top[pos].score}`
+    :`🐡 ${playerNick} • faça seu primeiro recorde!`;
+}
 async function openRanking(){if(!playerNick){$("#nickname").value="";screen("profile");setTimeout(()=>$("#nickname").focus(),80);return}await submitRanking();screen("ranking");drawRanking()}
 function saveBoard(){submitRanking()}
 function resize(){D=Math.min(devicePixelRatio||1,2);W=C.clientWidth;H=C.clientHeight;C.width=W*D;C.height=H*D;ctx.setTransform(D,0,0,D,0,0)}addEventListener("resize",resize,{passive:true});resize();
