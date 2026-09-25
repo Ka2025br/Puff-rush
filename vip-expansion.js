@@ -23,6 +23,9 @@
   let lastTap = 0;
   let holding = false;
   let holdTimer = null;
+  let lastZone = -1;
+  let eventCooldown = 0;
+  let specialSpawn = 0;
 
   const hud = document.createElement("div");
   hud.id = "vipMissionHud";
@@ -37,9 +40,41 @@
       font:900 12px/1.2 system-ui;letter-spacing:.35px;backdrop-filter:blur(7px)}
     .vipMissionHud.hidden{display:none}
     .vipMissionHud strong{color:#ffe36d}
+    .vipChapter{position:absolute;z-index:10;left:50%;top:18%;transform:translate(-50%,-12px) scale(.96);
+      width:min(88vw,390px);padding:15px 18px;border-radius:18px;text-align:center;pointer-events:none;
+      opacity:0;background:linear-gradient(135deg,#00172fed,#073e64ed);border:1px solid #ffe36d88;
+      box-shadow:0 18px 55px #000b;transition:.28s;color:#fff}
+    .vipChapter.show{opacity:1;transform:translate(-50%,0) scale(1)}
+    .vipChapter small{display:block;color:#ffe36d;font:900 9px system-ui;letter-spacing:2px}
+    .vipChapter b{display:block;margin:4px 0;font:1000 20px system-ui}
+    .vipChapter span{font:700 11px/1.35 system-ui;color:#c9f5ff}
     @media(max-width:520px){.vipMissionHud{top:54px;font-size:11px;padding:7px 10px}}
   `;
   document.head.appendChild(style);
+
+  const chapter = document.createElement("div");
+  chapter.className = "vipChapter";
+  document.getElementById("app").appendChild(chapter);
+
+  const SHIP_ZONES = [
+    ["CONVÉS PARTIDO", "Entre pelos destroços e encontre a primeira chave."],
+    ["CASA DE MÁQUINAS", "Feche as válvulas antes que o ar acabe."],
+    ["PORÃO INUNDADO", "Resgate os filhotes presos entre redes e minas."],
+    ["CABINE DO CAPITÃO", "Use as três chaves e abra o cofre perdido."]
+  ];
+  const ABYSS_ZONES = [
+    ["ZONA SEM LUZ", "Os cristais são sua única fonte de energia."],
+    ["JARDIM ELÉTRICO", "Desvie das águas-vivas e carregue o Puff Prime."],
+    ["FENDA VIVA", "A sombra está seguindo você. Não pare."],
+    ["NINHO DA GUARDIÃ", "Colete cargas e use a arrancada contra a Enguia."]
+  ];
+
+  function showChapter(title, text) {
+    chapter.innerHTML = `<small>ÁREA VIP • CAPÍTULO</small><b>${title}</b><span>${text}</span>`;
+    chapter.classList.add("show");
+    clearTimeout(showChapter.t);
+    showChapter.t = setTimeout(() => chapter.classList.remove("show"), 2100);
+  }
 
   function isVipStage() {
     return stage >= 2;
@@ -50,11 +85,26 @@
     bossMode = false;
     bossTimer = 0;
     bossDefeated = false;
+    lastZone = -1;
+    eventCooldown = 0;
+    specialSpawn = 90;
     mission = stage === 2
-      ? { keys: 0, rescues: 0 }
-      : { crystals: 0, energy: 100 };
+      ? { keys: 0, rescues: 0, valves: 0, air: 100, chest: false }
+      : { crystals: 0, energy: 100, charges: 0, bossHp: 3 };
     hud.classList.remove("hidden");
     syncMissionHud();
+    setTimeout(() => updateZone(true), 120);
+  }
+
+  function updateZone(force) {
+    if (!mission || !isVipStage()) return;
+    const zone = Math.min(3, Math.floor((distance / STAGES[stage].goal) * 4));
+    if (force || zone !== lastZone) {
+      lastZone = zone;
+      const data = (stage === 2 ? SHIP_ZONES : ABYSS_ZONES)[zone];
+      showChapter(data[0], data[1]);
+      sfx("unlock");
+    }
   }
 
   function syncMissionHud() {
@@ -64,11 +114,11 @@
     }
     hud.classList.remove("hidden");
     if (stage === 2) {
-      const chest = mission.keys >= 3 && mission.rescues >= 2 ? "ABERTO" : "BLOQUEADO";
-      hud.innerHTML = `🔑 <strong>${mission.keys}/3</strong> · 🐡 RESGATES <strong>${mission.rescues}/2</strong> · 🧰 BAÚ <strong>${chest}</strong>`;
+      const chest = mission.chest ? "ABERTO" : "TRANCADO";
+      hud.innerHTML = `🫧 <strong>${Math.ceil(mission.air)}%</strong> · 🔧 <strong>${mission.valves}/2</strong> · 🔑 <strong>${mission.keys}/3</strong> · 🐡 <strong>${mission.rescues}/2</strong> · 🧰 <strong>${chest}</strong>`;
     } else {
-      const boss = bossDefeated ? "VENCIDA" : bossMode ? Math.max(0, Math.ceil(bossTimer / 60)) + "s" : "AGUARDA";
-      hud.innerHTML = `💎 LUZ <strong>${mission.crystals}/4</strong> · 🔆 ENERGIA <strong>${Math.ceil(mission.energy)}%</strong> · ⚡ ENGUIA <strong>${boss}</strong>`;
+      const boss = bossDefeated ? "VENCIDA" : bossMode ? `${mission.bossHp} VIDAS` : "À ESPREITA";
+      hud.innerHTML = `💎 <strong>${mission.crystals}/4</strong> · 🔆 <strong>${Math.ceil(mission.energy)}%</strong> · ⚡ CARGA <strong>${mission.charges}</strong> · 🐍 <strong>${boss}</strong>`;
     }
   }
 
@@ -107,17 +157,20 @@
     let type = "coin";
 
     if (stage === 2) {
-      if (mission.keys < 3 && progress > .14 + mission.keys * .20) type = "key";
+      if (mission.valves < 2 && progress > .22 + mission.valves * .20) type = "valve";
+      else if (mission.keys < 3 && progress > .10 + mission.keys * .21) type = "key";
       else if (mission.rescues < 2 && progress > .34 + mission.rescues * .28) type = "rescue";
     } else if (mission.crystals < 4 && progress > .12 + mission.crystals * .18) {
       type = "crystal";
+    } else if (bossMode && mission.charges < 2) {
+      type = "spark";
     }
 
     original.addItem(type);
     const current = items[items.length - 1];
     if (type !== "coin") {
       current.y = H * .48 + Math.sin(distance * .15) * H * .12;
-      current.r = type === "rescue" ? 16 : 13;
+      current.r = type === "rescue" ? 16 : type === "valve" ? 17 : 13;
     }
   };
 
@@ -133,11 +186,22 @@
         score += 5;
         toast("🐡 FILHOTE RESGATADO!");
       }
+      if (type === "valve" && mission.valves < 2) {
+        mission.valves++;
+        mission.air = Math.min(100, mission.air + 38);
+        score += 6;
+        toast("🔧 VÁLVULA FECHADA — INUNDAÇÃO CONTIDA!");
+      }
       if (type === "crystal" && mission.crystals < 4) {
         mission.crystals++;
         mission.energy = Math.min(100, mission.energy + 28);
         score += 4;
         toast("💎 CRISTAL DE LUZ!");
+      }
+      if (type === "spark" && mission.charges < 3) {
+        mission.charges++;
+        mission.energy = Math.min(100, mission.energy + 18);
+        toast("⚡ CARGA PRIME — TOQUE DUPLO PARA ATACAR!");
       }
     });
     syncMissionHud();
@@ -149,12 +213,27 @@
       return;
     }
 
+    updateZone(false);
+    eventCooldown = Math.max(0, eventCooldown - dt);
+    specialSpawn -= dt;
     const touched = [];
     for (const p of items) {
-      if (!p.dead && ["key", "rescue", "crystal"].includes(p.type) &&
+      if (!p.dead && ["key", "rescue", "crystal", "valve", "spark"].includes(p.type) &&
           Math.hypot(p.x - fish.x, p.y - fish.y) < fish.r + p.r) {
         touched.push(p.type);
       }
+    }
+
+    if (stage === 2) {
+      const progress = distance / STAGES[stage].goal;
+      const drain = progress > .25 && progress < .78 ? (mission.valves < 2 ? .026 : .008) : .004;
+      mission.air = Math.max(0, mission.air - drain * dt);
+      if (mission.air <= 0 && inv <= 0) {
+        mission.air = 32;
+        damage();
+        toast("🫧 SEM AR — ENCONTRE UMA VÁLVULA!");
+      }
+      if (progress > .52 && progress < .76) fish.y += Math.sin(bg * .055) * .34 * dt;
     }
 
     if (stage === 3) {
@@ -167,12 +246,16 @@
 
       if (bossMode && !bossDefeated) {
         bossTimer -= dt;
-        if (bossTimer <= 0) {
-          bossDefeated = true;
-          bossMode = false;
-          score += 20;
-          sfx("win");
-          toast("⚡ ENGUIA GUARDIÃ VENCIDA!");
+        if (specialSpawn <= 0) {
+          original.addItem("spark");
+          const charge = items[items.length - 1];
+          charge.y = H * (.25 + Math.random() * .5);
+          specialSpawn = 150;
+        }
+        if (bossTimer <= 0 && !bossDefeated) {
+          bossTimer = 300;
+          damage();
+          toast("🐍 A GUARDIÃ ATACOU — USE CARGAS PRIME!");
         }
       }
     }
@@ -183,14 +266,24 @@
 
   finish = function () {
     if (stage === 2 && mission) {
-      if (mission.keys < 3 || mission.rescues < 2) {
+      if (mission.keys < 3 || mission.rescues < 2 || mission.valves < 2) {
         distance = STAGES[stage].goal - 9;
-        if (mission.keys < 3) original.addItem("key");
+        if (mission.valves < 2) original.addItem("valve");
+        else if (mission.keys < 3) original.addItem("key");
         else original.addItem("rescue");
         const forced = items[items.length - 1];
         forced.y = H * .5;
         forced.r = forced.type === "rescue" ? 16 : 13;
-        toast("🧭 COMPLETE AS TAREFAS DO NAVIO!");
+        toast("🧭 O COFRE EXIGE TODAS AS MISSÕES!");
+        return;
+      }
+      if (!mission.chest) {
+        mission.chest = true;
+        score += 30;
+        coins += 10;
+        sfx("win");
+        showChapter("COFRE DO CAPITÃO ABERTO", "+10 moedas VIP e o mapa secreto do Abismo foram encontrados.");
+        distance = STAGES[stage].goal - 4;
         return;
       }
     }
@@ -207,8 +300,9 @@
         distance = STAGES[stage].goal - 8;
         if (!bossMode) {
           bossMode = true;
-          bossTimer = 720;
-          toast("⚡ SOBREVIVA À ENGUIA GUARDIÃ!");
+          bossTimer = 330;
+          specialSpawn = 20;
+          showChapter("ENGUIA GUARDIÃ", "Colete uma carga elétrica e dê toque duplo para atacar. São três golpes.");
         }
         return;
       }
@@ -248,14 +342,14 @@
       }
     } else {
       // Névoa viva, feixes bioluminescentes e presença da Enguia.
-      const glow = Math.max(.08, (mission ? mission.energy : 100) / 100 * .3);
+      const glow = Math.max(.035, (mission ? mission.energy : 100) / 100 * .34);
       const radial = ctx.createRadialGradient(fish.x, fish.y, 18, fish.x, fish.y, Math.max(W, H) * .55);
       radial.addColorStop(0, "rgba(90,225,255," + glow + ")");
       radial.addColorStop(1, "rgba(0,0,12,.78)");
       ctx.fillStyle = radial;
       ctx.fillRect(0, 0, W, H);
 
-      ctx.globalAlpha = bossMode ? .62 : .22;
+      ctx.globalAlpha = bossMode ? .82 : .22;
       ctx.strokeStyle = "#73f4ff";
       ctx.lineWidth = bossMode ? 14 : 4;
       const ey = H * .5 + Math.sin(bg * .025) * H * .22;
@@ -263,6 +357,12 @@
       ctx.moveTo(W + 40, ey);
       ctx.bezierCurveTo(W * .75, ey - 80, W * .62, ey + 90, W * .48, ey);
       ctx.stroke();
+      if (bossMode && mission) {
+        ctx.fillStyle = "#ffdf64";
+        for (let i = 0; i < mission.bossHp; i++) {
+          ctx.beginPath(); ctx.arc(W - 28 - i * 19, 105, 6, 0, Math.PI * 2); ctx.fill();
+        }
+      }
     }
     ctx.restore();
   };
@@ -340,7 +440,7 @@
   };
 
   drawItem = function (p) {
-    if (!["key", "rescue", "crystal"].includes(p.type)) {
+    if (!["key", "rescue", "crystal", "valve", "spark"].includes(p.type)) {
       original.drawItem(p);
       return;
     }
@@ -370,6 +470,15 @@
       ctx.fillStyle = "#64d9ef"; ctx.beginPath(); ctx.moveTo(-14, 0); ctx.lineTo(-25, -9); ctx.lineTo(-23, 10); ctx.closePath(); ctx.fill();
       ctx.fillStyle = "#fff"; ctx.beginPath(); ctx.arc(7, -4, 4, 0, Math.PI * 2); ctx.fill();
       ctx.fillStyle = "#09253b"; ctx.beginPath(); ctx.arc(8, -4, 2, 0, Math.PI * 2); ctx.fill();
+    }
+    if (p.type === "valve") {
+      ctx.strokeStyle = "#ffb15a"; ctx.lineWidth = 5;
+      ctx.beginPath(); ctx.arc(0, 0, 12, 0, Math.PI * 2); ctx.stroke();
+      for (let a = 0; a < 6; a++) { ctx.beginPath(); ctx.moveTo(Math.cos(a) * 10, Math.sin(a) * 10); ctx.lineTo(Math.cos(a) * 19, Math.sin(a) * 19); ctx.stroke(); }
+    }
+    if (p.type === "spark") {
+      ctx.fillStyle = "#fff36a"; ctx.beginPath();
+      ctx.moveTo(3,-18);ctx.lineTo(-10,2);ctx.lineTo(-2,2);ctx.lineTo(-7,18);ctx.lineTo(12,-5);ctx.lineTo(3,-5);ctx.closePath();ctx.fill();
     }
     ctx.restore();
   };
@@ -405,7 +514,21 @@
       fish.v = -9.2;
       inv = Math.max(inv, 45);
       sfx("unlock");
-      toast("⚡ ARRANCADA PRIME!");
+      if (stage === 3 && bossMode && mission && mission.charges > 0 && !bossDefeated) {
+        mission.charges--;
+        mission.bossHp--;
+        bossTimer = 330;
+        score += 12;
+        toast(`⚡ GOLPE PRIME! GUARDIÃ ${Math.max(0, mission.bossHp)}/3`);
+        if (mission.bossHp <= 0) {
+          bossDefeated = true;
+          bossMode = false;
+          score += 35;
+          sfx("win");
+          showChapter("GUARDIÃ VENCIDA", "O Abismo reconheceu o domínio do Puff Prime.");
+        }
+        syncMissionHud();
+      } else toast("⚡ ARRANCADA PRIME!");
     }
     lastTap = now;
     clearTimeout(holdTimer);
