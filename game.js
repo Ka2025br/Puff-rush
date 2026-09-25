@@ -155,4 +155,4 @@ $("#continueBtn").onclick=()=>intro(0);$("#rankBtn").onclick=openRanking;$("#ran
 C.addEventListener("pointerdown",flap,{passive:true});addEventListener("keydown",e=>{if(e.code==="Space"){e.preventDefault();flap()}});
 document.addEventListener("visibilitychange",()=>{if(document.hidden&&running){running=false;bank+=coins;persist();$("#gameoverText").innerHTML="Jogo pausado e moedas salvas.<br>Volte quando quiser.";screen("gameover")}});
 fish={x:W*.24,y:H*.45,v:0,r:21};$("#soundBtn").textContent=soundOn?"🔊 SOM":"🔇 SOM";mapDraw();requestAnimationFrame(loop);
- window.setPuffPremium=function(v){premium=!!v;try{mapDraw()}catch(e){}}; 
+ window.setPuffPremium=function(v){premium=!!v;if(premium)unlocked=Math.max(unlocked,2);try{mapDraw()}catch(e){}}; 
