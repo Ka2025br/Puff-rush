@@ -27,6 +27,12 @@
   let eventCooldown = 0;
   let specialSpawn = 0;
 
+  // Artes VIP são carregadas separadamente para não pesar na jornada gratuita.
+  const vipWorlds = {
+    2: Object.assign(new Image(), { src: "puff-vip-ship.webp" }),
+    3: Object.assign(new Image(), { src: "puff-vip-abyss.webp" })
+  };
+
   const hud = document.createElement("div");
   hud.id = "vipMissionHud";
   hud.className = "vipMissionHud hidden";
@@ -311,9 +317,46 @@
     original.finish();
   };
 
+  function drawWorldImage(image) {
+    if (!image || !image.complete || !image.naturalWidth) return false;
+    const scale = Math.max(W / image.naturalWidth, H / image.naturalHeight);
+    const dw = image.naturalWidth * scale;
+    const dh = image.naturalHeight * scale;
+    const drift = Math.sin(bg * .0025) * 10;
+    ctx.drawImage(image, (W - dw) / 2 + drift, (H - dh) / 2, dw, dh);
+    return true;
+  }
+
   background = function () {
-    original.background();
-    if (!isVipStage()) return;
+    if (!isVipStage()) {
+      original.background();
+      return;
+    }
+
+    bg += speed() * .32;
+    if (!drawWorldImage(vipWorlds[stage])) {
+      const fallback = ctx.createLinearGradient(0, 0, 0, H);
+      fallback.addColorStop(0, STAGES[stage].colors[0]);
+      fallback.addColorStop(1, STAGES[stage].colors[1]);
+      ctx.fillStyle = fallback;
+      ctx.fillRect(0, 0, W, H);
+    }
+
+    // Vignette preserva leitura do personagem, obstáculos e HUD.
+    const vignette = ctx.createRadialGradient(W * .38, H * .48, 30, W * .45, H * .5, Math.max(W, H) * .72);
+    vignette.addColorStop(0, "rgba(0,18,38,.02)");
+    vignette.addColorStop(1, stage === 2 ? "rgba(0,13,28,.55)" : "rgba(0,0,18,.68)");
+    ctx.fillStyle = vignette;
+    ctx.fillRect(0, 0, W, H);
+
+    ctx.globalAlpha = .24;
+    ctx.fillStyle = "#d7fbff";
+    for (let i = 0; i < 16; i++) {
+      const bx = (i * 83 + bg * (.08 + i % 3 * .02)) % W;
+      const by = H - ((i * 71 + bg * (.18 + i % 4 * .03)) % H);
+      ctx.beginPath(); ctx.arc(bx, by, 1.5 + i % 3, 0, Math.PI * 2); ctx.fill();
+    }
+    ctx.globalAlpha = 1;
 
     ctx.save();
     if (stage === 2) {
