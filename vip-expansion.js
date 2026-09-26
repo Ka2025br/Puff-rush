@@ -29,9 +29,10 @@
 
   // Artes VIP são carregadas separadamente para não pesar na jornada gratuita.
   const vipWorlds = {
-    2: Object.assign(new Image(), { src: "puff-vip-ship.webp" }),
-    3: Object.assign(new Image(), { src: "puff-vip-abyss.webp" })
+    2: Object.assign(new Image(), { src: "Imagem do ChatGPT 25 de set. de 2026, 20_51_15.png" }),
+    3: Object.assign(new Image(), { src: "c7d725ee-cbf2-4325-a572-5ab441418067.png" })
   };
+  const puffPrimeArt = Object.assign(new Image(), { src: "Imagem do ChatGPT 25 de set. de 2026, 20_51_40.png" });
 
   const hud = document.createElement("div");
   hud.id = "vipMissionHud";
@@ -527,24 +528,42 @@
   };
 
   drawFish = function () {
-    original.drawFish();
-    if (!isVipStage()) return;
+    if (!isVipStage()) {
+      original.drawFish();
+      return;
+    }
+
+    ctx.save();
+    ctx.translate(fish.x, fish.y);
+    ctx.rotate(clamp(fish.v * .035, -.22, .34));
+    ctx.globalAlpha = inv > 0 && Math.floor(inv / 8) % 2 ? .55 : 1;
+    if (puffPrimeArt.complete && puffPrimeArt.naturalWidth) {
+      const targetW = holding ? 82 : 70;
+      const targetH = targetW * (puffPrimeArt.naturalHeight / puffPrimeArt.naturalWidth);
+      ctx.drawImage(puffPrimeArt, -targetW * .52, -targetH * .5, targetW, targetH);
+    } else {
+      ctx.restore();
+      original.drawFish();
+      ctx.save();
+    }
+    ctx.restore();
 
     ctx.save();
     ctx.globalCompositeOperation = "lighter";
-    const aura = ctx.createRadialGradient(fish.x, fish.y, 15, fish.x, fish.y, holding ? 54 : 38);
-    aura.addColorStop(0, "rgba(88,225,255,.30)");
+    const aura = ctx.createRadialGradient(fish.x, fish.y, 12, fish.x, fish.y, holding ? 58 : 43);
+    aura.addColorStop(0, "rgba(88,225,255,.38)");
+    aura.addColorStop(.58, "rgba(255,221,90,.10)");
     aura.addColorStop(1, "rgba(88,225,255,0)");
     ctx.fillStyle = aura;
     ctx.beginPath();
-    ctx.arc(fish.x, fish.y, holding ? 54 : 38, 0, Math.PI * 2);
+    ctx.arc(fish.x, fish.y, holding ? 58 : 43, 0, Math.PI * 2);
     ctx.fill();
 
     if (holding) {
       ctx.strokeStyle = "#ffe36d";
       ctx.lineWidth = 3;
       ctx.beginPath();
-      ctx.arc(fish.x, fish.y, 40 + Math.sin(bg * .1) * 3, 0, Math.PI * 2);
+      ctx.arc(fish.x, fish.y, 43 + Math.sin(bg * .1) * 3, 0, Math.PI * 2);
       ctx.stroke();
     }
     ctx.restore();
