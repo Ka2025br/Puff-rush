@@ -5,8 +5,8 @@ let best=+(localStorage.pr375finalbest||0),bank=+(localStorage.pr375finalbank||0
 const STAGES=[
  {name:"RECIFE RASO",short:"RECIFE",icon:"🪸",tier:"FREE",desc:"Aprenda o ritmo em um percurso mais longo e progressivo.",mission:"Chegue ao final • preserve vidas • colete moedas",goal:64,gap:.27,speed:2.45,maxSpeed:3.20,mechanic:"coral",colors:["#6ae7f1","#087ca2"]},
  {name:"CAVERNA",short:"CAVERNA",icon:"💎",tier:"FREE",desc:"Mais longa, mais rápida e com obstáculos móveis.",mission:"Atravesse a caverna • adapte-se à aceleração",goal:76,gap:.245,speed:3.05,maxSpeed:4.10,mechanic:"cave",colors:["#234c86","#160d43"]},
- {name:"NAVIO AFUNDADO",short:"NAVIO",icon:"⚓",tier:"PREMIUM",desc:"Puff Prime entra nos destroços e enfrenta correnteza.",mission:"Passe pelo casco • domine a velocidade",goal:88,gap:.225,speed:3.20,maxSpeed:4.30,mechanic:"ship",colors:["#247e92","#062b46"]},
- {name:"ABISMO",short:"ABISMO",icon:"🌌",tier:"PREMIUM",desc:"A fase final: escura, longa, rápida e precisa.",mission:"Conquiste o Abismo • finalize a jornada",goal:102,gap:.21,speed:3.55,maxSpeed:4.85,mechanic:"abyss",colors:["#102f72","#030817"]}
+ {name:"NAVIO AFUNDADO",short:"NAVIO",icon:"⚓",tier:"PREMIUM",desc:"Uma aventura em 4 compartimentos com inundação, resgates e cofre secreto.",mission:"Controle o ar • feche 2 válvulas • encontre 3 chaves • salve 2 filhotes",goal:88,gap:.225,speed:3.20,maxSpeed:4.30,mechanic:"ship",colors:["#247e92","#062b46"]},
+ {name:"ABISMO",short:"ABISMO",icon:"🌌",tier:"PREMIUM",desc:"Escuridão viva, perseguição e uma batalha real contra a Enguia Guardiã.",mission:"Alimente a luz • encontre 4 cristais • carregue o Prime • vença a Guardiã",goal:102,gap:.21,speed:3.55,maxSpeed:4.85,mechanic:"abyss",colors:["#102f72","#030817"]}
 ];
 
 // V3.81 RANKING GLOBAL — camada online independente. Gameplay V3.75 abaixo permanece preservado.
@@ -155,4 +155,4 @@ $("#continueBtn").onclick=()=>intro(0);$("#rankBtn").onclick=openRanking;$("#ran
 C.addEventListener("pointerdown",flap,{passive:true});addEventListener("keydown",e=>{if(e.code==="Space"){e.preventDefault();flap()}});
 document.addEventListener("visibilitychange",()=>{if(document.hidden&&running){running=false;bank+=coins;persist();$("#gameoverText").innerHTML="Jogo pausado e moedas salvas.<br>Volte quando quiser.";screen("gameover")}});
 fish={x:W*.24,y:H*.45,v:0,r:21};$("#soundBtn").textContent=soundOn?"🔊 SOM":"🔇 SOM";mapDraw();requestAnimationFrame(loop);
- window.setPuffPremium=function(v){premium=!!v;try{mapDraw()}catch(e){}}; 
+ window.setPuffPremium=function(v){premium=!!v;if(premium)unlocked=Math.max(unlocked,2);try{mapDraw()}catch(e){}}; 
