@@ -28,6 +28,7 @@
   let specialSpawn = 0;
   let vipTravelX = 0;
   let vipTravelVX = 0;
+  let vipCameraX = 0;
 
   // Artes VIP são carregadas separadamente para não pesar na jornada gratuita.
   const vipWorlds = {
@@ -99,6 +100,7 @@
     specialSpawn = 90;
     vipTravelX = Math.max(0, W * .10);
     vipTravelVX = 0;
+    vipCameraX = 0;
     mission = stage === 2
       ? { keys: 0, rescues: 0, valves: 0, air: 100, chest: false }
       : { crystals: 0, energy: 100, charges: 0, bossHp: 3 };
@@ -236,6 +238,7 @@
     vipTravelVX *= Math.pow(.86, dt);
     fish.x += vipTravelVX * dt;
     fish.x = clamp(fish.x, W * .22, W * .49);
+    vipCameraX += speed() * dt * (stage === 3 ? .48 : .40);
 
     eventCooldown = Math.max(0, eventCooldown - dt);
     specialSpawn -= dt;
@@ -336,11 +339,18 @@
 
   function drawWorldImage(image) {
     if (!image || !image.complete || !image.naturalWidth) return false;
-    const scale = Math.max(W / image.naturalWidth, H / image.naturalHeight);
+    // Overscan + camera pan: the illustration becomes a traversable world,
+    // rather than a static poster behind moving obstacles.
+    const scale = Math.max((W * 1.38) / image.naturalWidth, (H * 1.08) / image.naturalHeight);
     const dw = image.naturalWidth * scale;
     const dh = image.naturalHeight * scale;
-    const drift = Math.sin(bg * .0025) * 10;
-    ctx.drawImage(image, (W - dw) / 2 + drift, (H - dh) / 2, dw, dh);
+    const maxPanX = Math.max(0, dw - W);
+    const maxPanY = Math.max(0, dh - H);
+    const progress = Math.min(1, distance / STAGES[stage].goal);
+    const panX = -maxPanX * (.08 + progress * .84);
+    const breatheX = Math.sin(bg * .0025) * 7;
+    const breatheY = Math.sin(bg * .0017) * Math.min(10, maxPanY * .12);
+    ctx.drawImage(image, panX + breatheX, -maxPanY * .5 + breatheY, dw, dh);
     return true;
   }
 
