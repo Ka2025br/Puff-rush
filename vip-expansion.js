@@ -26,6 +26,8 @@
   let lastZone = -1;
   let eventCooldown = 0;
   let specialSpawn = 0;
+  let vipTravelX = 0;
+  let vipTravelVX = 0;
 
   // Artes VIP são carregadas separadamente para não pesar na jornada gratuita.
   const vipWorlds = {
@@ -95,6 +97,8 @@
     lastZone = -1;
     eventCooldown = 0;
     specialSpawn = 90;
+    vipTravelX = Math.max(0, W * .10);
+    vipTravelVX = 0;
     mission = stage === 2
       ? { keys: 0, rescues: 0, valves: 0, air: 100, chest: false }
       : { crystals: 0, energy: 100, charges: 0, bossHp: 3 };
@@ -221,6 +225,18 @@
     }
 
     updateZone(false);
+
+    // VIP camera/travel: Puff Prime visibly advances through the world instead of
+    // feeling fixed while every obstacle comes toward him. FREE stages are untouched.
+    const vipProgress = Math.min(1, distance / STAGES[stage].goal);
+    const cruiseX = W * (.25 + vipProgress * .16);
+    const surge = Math.min(W * .055, Math.max(0, -fish.v) * 2.4);
+    const targetX = clamp(cruiseX + surge, W * .23, W * .47);
+    vipTravelVX += (targetX - fish.x) * .018 * dt;
+    vipTravelVX *= Math.pow(.86, dt);
+    fish.x += vipTravelVX * dt;
+    fish.x = clamp(fish.x, W * .22, W * .49);
+
     eventCooldown = Math.max(0, eventCooldown - dt);
     specialSpawn -= dt;
     const touched = [];
