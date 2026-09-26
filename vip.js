@@ -22,4 +22,14 @@
 
   premiumButton.textContent = "VER ÁREA VIP • TESTE";
   premiumButton.onclick = openVipTest;
+
+  // Atalho temporário de teste: ?viptest=1 abre diretamente o Navio Afundado.
+  const params = new URLSearchParams(location.search);
+  if (params.get("viptest") === "1") {
+    window.setPuffPremium(true);
+    premiumButton.textContent = "ÁREA VIP ATIVA • TESTE";
+    setTimeout(() => {
+      if (typeof intro === "function") intro(2);
+    }, 120);
+  }
 })();
