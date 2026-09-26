@@ -231,14 +231,17 @@
     // VIP camera/travel: Puff Prime visibly advances through the world instead of
     // feeling fixed while every obstacle comes toward him. FREE stages are untouched.
     const vipProgress = Math.min(1, distance / STAGES[stage].goal);
-    const cruiseX = W * (.25 + vipProgress * .16);
-    const surge = Math.min(W * .055, Math.max(0, -fish.v) * 2.4);
-    const targetX = clamp(cruiseX + surge, W * .23, W * .47);
-    vipTravelVX += (targetX - fish.x) * .018 * dt;
-    vipTravelVX *= Math.pow(.86, dt);
+    // Puff Prime owns the motion. He advances across the viewport while the world
+    // remains visually anchored; vertical input still controls swimming.
+    const cruiseX = W * (.20 + vipProgress * .56);
+    const surge = Math.min(W * .07, Math.max(0, -fish.v) * 2.8);
+    const targetX = clamp(cruiseX + surge, W * .18, W * .80);
+    vipTravelVX += (targetX - fish.x) * .030 * dt;
+    vipTravelVX *= Math.pow(.82, dt);
     fish.x += vipTravelVX * dt;
-    fish.x = clamp(fish.x, W * .22, W * .49);
-    vipCameraX += speed() * dt * (stage === 3 ? .48 : .40);
+    fish.x = clamp(fish.x, W * .17, W * .82);
+    vipTravelX += Math.max(0, vipTravelVX) * dt;
+    vipCameraX = fish.x - W * .34;
 
     eventCooldown = Math.max(0, eventCooldown - dt);
     specialSpawn -= dt;
@@ -341,16 +344,15 @@
     if (!image || !image.complete || !image.naturalWidth) return false;
     // Overscan + camera pan: the illustration becomes a traversable world,
     // rather than a static poster behind moving obstacles.
-    const scale = Math.max((W * 1.38) / image.naturalWidth, (H * 1.08) / image.naturalHeight);
+    const scale = Math.max((W * 1.05) / image.naturalWidth, (H * 1.04) / image.naturalHeight);
     const dw = image.naturalWidth * scale;
     const dh = image.naturalHeight * scale;
     const maxPanX = Math.max(0, dw - W);
     const maxPanY = Math.max(0, dh - H);
-    const progress = Math.min(1, distance / STAGES[stage].goal);
-    const panX = -maxPanX * (.08 + progress * .84);
-    const breatheX = Math.sin(bg * .0025) * 7;
-    const breatheY = Math.sin(bg * .0017) * Math.min(10, maxPanY * .12);
-    ctx.drawImage(image, panX + breatheX, -maxPanY * .5 + breatheY, dw, dh);
+    // VIP camera now follows Puff: scenery is stable, with only subtle cinematic drift.
+    const breatheX = Math.sin(bg * .0012) * Math.min(3, maxPanX * .08);
+    const breatheY = Math.sin(bg * .0010) * Math.min(5, maxPanY * .08);
+    ctx.drawImage(image, -maxPanX * .5 + breatheX, -maxPanY * .5 + breatheY, dw, dh);
     return true;
   }
 
